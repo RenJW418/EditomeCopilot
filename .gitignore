@@ -1,0 +1,30 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.DS_Store
+*.log
+nohup.out
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.DS_Store
+
+# Data
+data/pdfs/
+data/faiss_db/
+data/user_uploads_db/
+# data/knowledge_base/  <-- Keep this committed
+history/
+
+# IDE
+.vscode/
+.idea/
+.gradio/
+style.css
