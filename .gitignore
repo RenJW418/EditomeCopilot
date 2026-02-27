@@ -29,6 +29,11 @@ history/
 # Paper drafts
 paper/
 
+# Data-build scripts (kept locally, not distributed)
+scripts/build_literature_db.py
+scripts/build_kg_from_almanac.py
+scripts/process_knowledge_base.py
+
 # IDE
 .vscode/
 .idea/
