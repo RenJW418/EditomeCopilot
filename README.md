@@ -65,6 +65,7 @@ cp .env.example .env
 | `data/faiss_db/index.pkl` | 166 MB | FAISS 元数据 |
 | `data/faiss_db/bm25_corpus.pkl` | 163 MB | BM25 词汇索引 |
 | `data/knowledge_base/literature_db_GEA_v2026_Q1.json` | 168 MB | 原始文献库 |
+| `data/knowledge_base/report_GEA_v2026_Q1.md` | <1 MB | 基因编辑年鉴报告 |
 | `data/knowledge_base/kg.json` | <1 MB | 知识图谱 |
 | `data/eval/` | <1 MB | GEBench 评测集 |
 | `data/user_uploads_db/` | — | 用户上传占位符 |
@@ -79,7 +80,7 @@ snapshot_download(
     repo_id="RenJW/editome-copilot-data",
     repo_type="dataset",
     local_dir=".",   # 下载到当前目录（即 EditomeCopilot/）
-    ignore_patterns=["*.md"],
+    ignore_patterns=["README.md"],  # 仅过滤 HF 自动生成的 README
 )
 EOF
 ```
@@ -90,11 +91,19 @@ EOF
 EditomeCopilot/
 ├── data/
 │   ├── faiss_db/
-│   │   ├── index.faiss          ✓
-│   │   ├── index.pkl            ✓
-│   │   └── bm25_corpus.pkl      ✓
-│   └── knowledge_base/
-│       └── literature_db_GEA_v2026_Q1.json  ✓
+│   │   ├── index.faiss                          ✓
+│   │   ├── index.pkl                            ✓
+│   │   └── bm25_corpus.pkl                      ✓
+│   ├── knowledge_base/
+│   │   ├── literature_db_GEA_v2026_Q1.json      ✓
+│   │   ├── report_GEA_v2026_Q1.md               ✓
+│   │   └── kg.json                              ✓
+│   ├── eval/
+│   │   ├── gebench.jsonl                        ✓
+│   │   └── gold_standard.jsonl                  ✓
+│   └── user_uploads_db/
+│       ├── index.faiss                          ✓
+│       └── index.pkl                            ✓
 └── ...
 ```
 
@@ -182,10 +191,6 @@ EditomeCopilot/
 │   ├── conflict_resolver.py  # CAEA (v4 算法)
 │   ├── retrieval_calibrator.py  # RCC (v4 算法)
 │   └── ...
-├── data/
-│   ├── faiss_db/             # 向量索引（已在 .gitignore 中）
-│   └── knowledge_base/       # kg.json 知识图谱（已提交）
-├── evaluation/               # GEBench 评估框架（本地，不在仓库中）
 ├── frontend/                 # React + Vite + Tailwind
 │   └── src/
 └── data/                     # 数据目录（从 HuggingFace 下载，不在仓库中）
@@ -206,18 +211,6 @@ EditomeCopilot/
 | `ENABLE_KG_AQE` | — | `true` | v4 知识图谱查询扩展 |
 | `ENABLE_CAEA` | — | `true` | v4 冲突感知聚合 |
 | `ENABLE_RCC` | — | `true` | v4 检索置信度校准 |
-
----
-
-## 开发模式
-
-```bash
-# 后端热重载
-uvicorn app:app --reload --port 6006
-
-# 前端开发服务器（自动代理 /api 到后端）
-cd frontend && npm run dev
-```
 
 ---
 

@@ -65,6 +65,7 @@ Pre-built FAISS indices and literature database (~750 MB total) are hosted on Hu
 | `data/faiss_db/index.pkl` | 166 MB | FAISS metadata store |
 | `data/faiss_db/bm25_corpus.pkl` | 163 MB | BM25 lexical index |
 | `data/knowledge_base/literature_db_GEA_v2026_Q1.json` | 168 MB | Raw literature DB |
+| `data/knowledge_base/report_GEA_v2026_Q1.md` | <1 MB | Gene editing almanac report |
 | `data/knowledge_base/kg.json` | <1 MB | Knowledge graph |
 | `data/eval/` | <1 MB | GEBench evaluation set |
 | `data/user_uploads_db/` | — | User upload placeholders |
@@ -79,7 +80,7 @@ snapshot_download(
     repo_id="RenJW/editome-copilot-data",
     repo_type="dataset",
     local_dir=".",   # downloads into current dir (EditomeCopilot/)
-    ignore_patterns=["*.md"],
+    ignore_patterns=["README.md"],  # only skip HF auto-generated README
 )
 EOF
 ```
@@ -90,11 +91,19 @@ After download, your directory should look like:
 EditomeCopilot/
 ├── data/
 │   ├── faiss_db/
-│   │   ├── index.faiss          ✓
-│   │   ├── index.pkl            ✓
-│   │   └── bm25_corpus.pkl      ✓
-│   └── knowledge_base/
-│       └── literature_db_GEA_v2026_Q1.json  ✓
+│   │   ├── index.faiss                          ✓
+│   │   ├── index.pkl                            ✓
+│   │   └── bm25_corpus.pkl                      ✓
+│   ├── knowledge_base/
+│   │   ├── literature_db_GEA_v2026_Q1.json      ✓
+│   │   ├── report_GEA_v2026_Q1.md               ✓
+│   │   └── kg.json                              ✓
+│   ├── eval/
+│   │   ├── gebench.jsonl                        ✓
+│   │   └── gold_standard.jsonl                  ✓
+│   └── user_uploads_db/
+│       ├── index.faiss                          ✓
+│       └── index.pkl                            ✓
 └── ...
 ```
 
@@ -179,10 +188,6 @@ EditomeCopilot/
 │   ├── conflict_resolver.py# CAEA (v4)
 │   ├── retrieval_calibrator.py # RCC (v4)
 │   └── ...
-├── data/
-│   ├── faiss_db/           # FAISS + BM25 index (gitignored)
-│   └── knowledge_base/     # kg.json committed
-├── evaluation/             # GEBench evaluation framework (local, not in repo)
 ├── frontend/               # React + Vite + Tailwind
 │   └── src/
 └── data/                   # Data directory (download from HuggingFace, not in repo)
