@@ -28,7 +28,7 @@ except Exception as e:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,   # Cannot be True when allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -47,6 +47,18 @@ class ChatRequestModel(BaseModel):
     query: str
     history: List[ChatMessage]
     session_id: Optional[str] = None
+
+@app.get("/api/health")
+async def health_check():
+    return {
+        "status": "ok",
+        "agent": "ready" if agent else "unavailable",
+        "vector_store": (
+            "loaded"
+            if agent and agent.data_pipeline and agent.data_pipeline.vector_store
+            else "empty"
+        ),
+    }
 
 @app.get("/api/sessions")
 async def get_sessions():
@@ -106,18 +118,17 @@ async def chat_endpoint(request: ChatRequestModel):
         # Determine if new session
         if not session_id:
             session_id = str(int(time.time()))
-            
-        # Process Query
-        response_text = agent.process_query(query_text)
-        
-        # Prepare Data for Saving
-        # Convert Pydantic models to dicts if necessary
+
+        # Convert Pydantic models to dicts (needed before passing to agent)
         history_dicts = []
         for msg in history:
             if hasattr(msg, "dict"):
-                 history_dicts.append(msg.dict())
+                history_dicts.append(msg.dict())
             else:
-                 history_dicts.append(msg)
+                history_dicts.append(msg)
+
+        # Process Query – pass conversation history for multi-turn context
+        response_text = agent.process_query(query_text, history=history_dicts)
                  
         new_messages = history_dicts + [
             {"role": "user", "content": query_text}, 

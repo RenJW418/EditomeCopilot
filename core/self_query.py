@@ -1,4 +1,4 @@
-from langchain_core.pydantic_v1 import BaseModel, Field
+from pydantic import BaseModel, Field
 from typing import List, Optional, Any
 from core.llm_client import LLMClient
 import json
@@ -25,7 +25,21 @@ class SelfQueryRetriever:
         """
         Analyzes the user query to extract structured filters for the literature database.
         Returns a dictionary of filters to be applied during retrieval.
+        Skips the LLM call when the query contains no explicit filter terms.
         """
+        # Fast-path: skip LLM if no filter-indicating keywords are present
+        _FILTER_KW = [
+            "efficiency", "%", ">", "<",
+            "in vivo", "in vitro", "human", "mouse",
+            "after 20", "since 20", "before 20", "published",
+            "clinical", "hek293", "hsc", "t-cell", "t cell",
+            "aav", "lnp", "electroporation",
+            "人", "鼠", "体内", "体外", "临床", "效率",
+        ]
+        q_low = query.lower()
+        if not any(kw in q_low for kw in _FILTER_KW):
+            return {}
+
         print(f"\n[Self-Querying] Analyzing query for structured filters: '{query}'")
         
         prompt = f"""

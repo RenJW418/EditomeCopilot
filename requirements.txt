@@ -1,21 +1,42 @@
-networkx==3.1
-rank-bm25==0.2.2
+﻿#  Core Infrastructure 
+networkx>=3.1
+rank-bm25>=0.2.2
 scikit-learn>=1.4.0
 numpy>=1.26.0
-pypdf==4.2.0
-openai==1.30.1
-python-dotenv==1.0.1
-requests==2.31.0
-pdfplumber==0.11.0
-langchain==0.2.0
-langchain-community==0.2.0
-langchain-huggingface==0.0.3
-faiss-cpu==1.8.0
-sentence-transformers==2.7.0
+
+#  PDF / Document Processing 
+pypdf>=4.2.0
+pdfplumber>=0.11.0
+
+#  LLM & API Client 
+openai>=1.60.0
+python-dotenv>=1.0.1
+requests>=2.31.0
+tenacity>=8.2.0
+httpx>=0.27.0
+
+#  LangChain Stack 
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-huggingface>=0.0.3
+faiss-cpu>=1.8.0
+
+#  Embedding & Reranking 
+sentence-transformers>=3.0.0
+
+#  Web Framework 
 fastapi>=0.110.0
-uvicorn>=0.29.0
+uvicorn[standard]>=0.29.0
 python-multipart>=0.0.9
+aiofiles>=23.2.0
+
+#  Reference Formats (user library import) 
 bibtexparser>=1.4.0
 rispy>=0.9.0
-click>=8.0.0
 
+#  Caching 
+diskcache>=5.6.0
+
+#  Utilities 
+tqdm>=4.66.0
+click>=8.0.0

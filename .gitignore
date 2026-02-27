@@ -5,6 +5,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 .env
 .DS_Store
 *.log
@@ -20,8 +21,13 @@ frontend/.DS_Store
 data/pdfs/
 data/faiss_db/
 data/user_uploads_db/
+data/cache/
+data/raptor_cache/
 # data/knowledge_base/  <-- Keep this committed
 history/
+
+# Paper drafts
+paper/
 
 # IDE
 .vscode/

@@ -31,9 +31,34 @@ class GeneEditingDataPipeline:
         self.llm = LLMClient()
         self.kg = GeneEditingKnowledgeGraph(persistence_path=os.path.join(base_dir, "knowledge_base/kg.json"))
         
-        # Step 5: Embeddings (Using local domain-adapted or general model for MVP)
-        # For production, consider text-embedding-3-small or BioSentVec
-        self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        # Step 5: Embeddings
+        # Priority: SPECTER2 (biomedical, citation-aware) → BiomedBERT → MiniLM fallback
+        # Override via EMBEDDING_MODEL env var.
+        _default_model = os.getenv(
+            "EMBEDDING_MODEL",
+            "pritamdeka/S-PubMedBert-MS-MARCO",  # Best biomedical retrieval model
+        )
+        _fallbacks = [
+            _default_model,
+            "pritamdeka/S-PubMedBert-MS-MARCO",   # Strong biomedical retrieval
+            "dmis-lab/biobert-base-cased-v1.2",    # Classic BioNLP model
+            "sentence-transformers/all-MiniLM-L6-v2",  # General fallback
+        ]
+        self.embeddings = None
+        for model_name in _fallbacks:
+            try:
+                print(f"[Embeddings] Trying model: {model_name}")
+                self.embeddings = HuggingFaceEmbeddings(
+                    model_name=model_name,
+                    model_kwargs={"device": os.getenv("EMBED_DEVICE", "cpu")},
+                    encode_kwargs={"normalize_embeddings": True, "batch_size": 32},
+                )
+                print(f"[Embeddings] Loaded: {model_name}")
+                break
+            except Exception as e:
+                print(f"[Embeddings] Failed to load {model_name}: {e}")
+        if self.embeddings is None:
+            raise RuntimeError("No embedding model could be loaded.")
         self.vector_store = None
         self.user_vector_store = None
         self.bm25 = None
@@ -488,12 +513,21 @@ class GeneEditingDataPipeline:
     def step4_chunking(self, parsed_docs):
         """Step 4: Chunking and Deduplication"""
         print("\n[Step 4] Chunking text (256-512 tokens, 10-20% overlap)...")
-        # Using LangChain's RecursiveCharacterTextSplitter
+        # Section-aware chunking: smaller chunks for precise retrieval
+        # chunk_size ~800 chars ≈ 200 tokens; overlap ~160 chars ensures context continuity
+        # Separators respect abstract sections (Methods / Results / Conclusion etc.)
+        _chunk_size = int(os.getenv("CHUNK_SIZE", "800"))
+        _chunk_overlap = int(os.getenv("CHUNK_OVERLAP", "160"))
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=2000, # Approx 500 tokens
-            chunk_overlap=200, # Approx 50 tokens
+            chunk_size=_chunk_size,
+            chunk_overlap=_chunk_overlap,
             length_function=len,
-            separators=["\n\n", "\n", ".", " ", ""]
+            separators=[
+                "\n## ", "\n### ",        # Markdown section headers
+                "INTRODUCTION:", "METHODS:", "RESULTS:", "CONCLUSION:",  # structured abstract
+                "Introduction:", "Methods:", "Results:", "Conclusion:",
+                "\n\n", "\n", ". ", " ", "",
+            ],
         )
         
         chunks = []
