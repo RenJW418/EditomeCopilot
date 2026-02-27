@@ -112,17 +112,36 @@ uvicorn app:app --host 0.0.0.0 --port 6006
 | `data/faiss_db/bm25_corpus.pkl` | 163 MB | BM25 词汇索引 |
 | `data/knowledge_base/literature_db_GEA_v2026_Q1.json` | 168 MB | 原始文献库 |
 
+在 **`EditomeCopilot/`** 项目根目录下运行以下命令，文件会自动下载到正确位置：
+
 ```bash
 pip install huggingface_hub
+
+# 在 EditomeCopilot/ 目录下执行
+cd EditomeCopilot
 python - <<'EOF'
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id="RenJW/editome-copilot-data",
     repo_type="dataset",
-    local_dir=".",
+    local_dir=".",   # 下载到当前目录（即 EditomeCopilot/）
     ignore_patterns=["*.md"],
 )
 EOF
+```
+
+下载完成后目录结构如下：
+
+```
+EditomeCopilot/
+├── data/
+│   ├── faiss_db/
+│   │   ├── index.faiss          ✓
+│   │   ├── index.pkl            ✓
+│   │   └── bm25_corpus.pkl      ✓
+│   └── knowledge_base/
+│       └── literature_db_GEA_v2026_Q1.json  ✓
+└── ...
 ```
 
 ### 方式 B — 从头构建

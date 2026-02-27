@@ -110,17 +110,36 @@ Pre-built FAISS indices and literature database (~750 MB total) are hosted on Hu
 | `data/faiss_db/bm25_corpus.pkl` | 163 MB | BM25 lexical index |
 | `data/knowledge_base/literature_db_GEA_v2026_Q1.json` | 168 MB | Raw literature DB |
 
+Run the following from inside the **`EditomeCopilot/`** project root — files will be placed in the correct paths automatically:
+
 ```bash
 pip install huggingface_hub
+
+# Run from inside EditomeCopilot/
+cd EditomeCopilot
 python - <<'EOF'
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id="RenJW/editome-copilot-data",
     repo_type="dataset",
-    local_dir=".",
+    local_dir=".",   # downloads into current dir (EditomeCopilot/)
     ignore_patterns=["*.md"],
 )
 EOF
+```
+
+After download, your directory should look like:
+
+```
+EditomeCopilot/
+├── data/
+│   ├── faiss_db/
+│   │   ├── index.faiss          ✓
+│   │   ├── index.pkl            ✓
+│   │   └── bm25_corpus.pkl      ✓
+│   └── knowledge_base/
+│       └── literature_db_GEA_v2026_Q1.json  ✓
+└── ...
 ```
 
 ### Option B — Build from scratch
