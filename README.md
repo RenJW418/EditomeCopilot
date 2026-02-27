@@ -6,6 +6,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 
+📖 [English Version](README_en.md)
+
 ---
 
 ## 系统架构
@@ -55,14 +57,17 @@ cp .env.example .env
 
 预构建的 FAISS 索引与文献库（约 750 MB）已托管在 Hugging Face：
 
-**数据集**：[RenJW/editome-copilot-data](https://huggingface.co/datasets/RenJW/editome-copilot-data)
+**数据集**：[RenJW/editome-copilot-data](https://huggingface.co/datasets/RenJW/editome-copilot-data)（完整 `data/` 目录，约 750 MB）
 
-| 文件 | 大小 | 说明 |
+| 路径 | 大小 | 说明 |
 |------|------|------|
 | `data/faiss_db/index.faiss` | 254 MB | FAISS 语义索引 |
 | `data/faiss_db/index.pkl` | 166 MB | FAISS 元数据 |
 | `data/faiss_db/bm25_corpus.pkl` | 163 MB | BM25 词汇索引 |
 | `data/knowledge_base/literature_db_GEA_v2026_Q1.json` | 168 MB | 原始文献库 |
+| `data/knowledge_base/kg.json` | <1 MB | 知识图谱 |
+| `data/eval/` | <1 MB | GEBench 评测集 |
+| `data/user_uploads_db/` | — | 用户上传占位符 |
 
 在 **`EditomeCopilot/`** 目录下执行（文件将自动下载至正确路径）：
 
@@ -166,7 +171,6 @@ uvicorn app:app --host 0.0.0.0 --port 6006
 ```
 EditomeCopilot/
 ├── app.py                    # FastAPI 入口
-├── cli_interactive.py        # 命令行交互模式
 ├── requirements.txt
 ├── start.sh / start.bat      # 一键部署脚本
 ├── .env.example              # 环境变量模板
@@ -181,10 +185,10 @@ EditomeCopilot/
 ├── data/
 │   ├── faiss_db/             # 向量索引（已在 .gitignore 中）
 │   └── knowledge_base/       # kg.json 知识图谱（已提交）
-├── evaluation/               # GEBench 评估框架
+├── evaluation/               # GEBench 评估框架（本地，不在仓库中）
 ├── frontend/                 # React + Vite + Tailwind
 │   └── src/
-└── scripts/                  # 数据摄取工具脚本
+└── data/                     # 数据目录（从 HuggingFace 下载，不在仓库中）
 ```
 
 ---

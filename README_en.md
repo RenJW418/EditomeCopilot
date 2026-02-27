@@ -6,6 +6,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 
+📖 [中文版本](README.md)
+
 ---
 
 ## Architecture
@@ -55,14 +57,17 @@ cp .env.example .env
 
 Pre-built FAISS indices and literature database (~750 MB total) are hosted on Hugging Face:
 
-**Dataset**: [RenJW/editome-copilot-data](https://huggingface.co/datasets/RenJW/editome-copilot-data)
+**Dataset**: [RenJW/editome-copilot-data](https://huggingface.co/datasets/RenJW/editome-copilot-data) (full `data/` directory, ~750 MB)
 
-| File | Size | Description |
+| Path | Size | Description |
 |------|------|-------------|
 | `data/faiss_db/index.faiss` | 254 MB | FAISS semantic index |
 | `data/faiss_db/index.pkl` | 166 MB | FAISS metadata store |
 | `data/faiss_db/bm25_corpus.pkl` | 163 MB | BM25 lexical index |
 | `data/knowledge_base/literature_db_GEA_v2026_Q1.json` | 168 MB | Raw literature DB |
+| `data/knowledge_base/kg.json` | <1 MB | Knowledge graph |
+| `data/eval/` | <1 MB | GEBench evaluation set |
+| `data/user_uploads_db/` | — | User upload placeholders |
 
 Run from inside the **`EditomeCopilot/`** directory — files will be placed in the correct paths automatically:
 
@@ -163,7 +168,6 @@ uvicorn app:app --host 0.0.0.0 --port 6006
 ```
 EditomeCopilot/
 ├── app.py                  # FastAPI entry point
-├── cli_interactive.py      # CLI chat mode
 ├── requirements.txt
 ├── start.sh / start.bat    # One-click deploy
 ├── .env.example
@@ -178,10 +182,10 @@ EditomeCopilot/
 ├── data/
 │   ├── faiss_db/           # FAISS + BM25 index (gitignored)
 │   └── knowledge_base/     # kg.json committed
-├── evaluation/             # GEBench evaluation framework
+├── evaluation/             # GEBench evaluation framework (local, not in repo)
 ├── frontend/               # React + Vite + Tailwind
 │   └── src/
-└── scripts/                # Data ingestion utilities
+└── data/                   # Data directory (download from HuggingFace, not in repo)
 ```
 
 ---

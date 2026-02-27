@@ -17,22 +17,17 @@ frontend/dist/
 frontend/.env
 frontend/.DS_Store
 
-# Data (large files excluded from git)
-data/pdfs/
-data/faiss_db/
-data/user_uploads_db/
-data/cache/
-data/raptor_cache/
-data/knowledge_base/literature_db_*.json
+# Data directory — hosted on HuggingFace, not in git
+data/
 history/
 
 # Paper drafts
 paper/
 
-# Data-build scripts (kept locally, not distributed)
-scripts/build_literature_db.py
-scripts/build_kg_from_almanac.py
-scripts/process_knowledge_base.py
+# Scripts and evaluation — local only
+scripts/
+evaluation/
+cli_interactive.py
 
 # IDE
 .vscode/
