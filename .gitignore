@@ -17,13 +17,13 @@ frontend/dist/
 frontend/.env
 frontend/.DS_Store
 
-# Data
+# Data (large files excluded from git)
 data/pdfs/
 data/faiss_db/
 data/user_uploads_db/
 data/cache/
 data/raptor_cache/
-# data/knowledge_base/  <-- Keep this committed
+data/knowledge_base/literature_db_*.json
 history/
 
 # Paper drafts
